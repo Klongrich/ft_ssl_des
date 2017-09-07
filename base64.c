@@ -16,17 +16,16 @@ static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
 static char *decoding_table = NULL;
 static int mod_table[] = {0, 2, 1};
 
-char *base64_encode(const unsigned char *src, size_t input_length, size_t output_length) {
+char        *base64_encode(const unsigned char *src, size_t input_length, size_t output_length) {
 
-    int i;
-    int j;
-    char *encoded_data;
+    char    *encoded_data;
+    int     i;
+    int     j;
 
     output_length = 4 * ((input_length + 2) / 3);
     encoded_data = (char *)malloc(sizeof(char) * output_length);
     if (encoded_data == NULL) 
         return NULL;
-
     i = 0;
     j = 0;
     while (i < input_length)
@@ -50,23 +49,26 @@ char *base64_encode(const unsigned char *src, size_t input_length, size_t output
     return encoded_data;
 }
 
-void build_decoding_table() {
+void        build_decoding_table() {
+    int i;
+
+    decoding_table = malloc(256);
+    i = 0;
+    while (i++ < 64)
+        decoding_table[(unsigned char) encoding_table[i]] = i;
+}
     
-        decoding_table = malloc(256);
     
-        for (int i = 0; i < 64; i++)
-            decoding_table[(unsigned char) encoding_table[i]] = i;
-    }
-    
-    
-void base64_cleanup() {
+void        base64_cleanup() {
      free(decoding_table);
 }
 
 
 unsigned char *base64_decode(const char *src, size_t input_length, size_t output_length) {
 
-    unsigned char *decoded_data;
+    unsigned char   *decoded_data;
+    int             i;
+    int             j;
 
     if (decoding_table == NULL) 
         build_decoding_table();
@@ -85,8 +87,10 @@ unsigned char *base64_decode(const char *src, size_t input_length, size_t output
     if (decoded_data == NULL) 
         return NULL;
 
-    for (int i = 0, j = 0; i < input_length;) {
-
+    i = 0;
+    j = 0;
+    while (i < input_length)
+    {
         uint32_t sextet_a = src[i] == '=' ? 0 & i++ : decoding_table[src[i++]];
         uint32_t sextet_b = src[i] == '=' ? 0 & i++ : decoding_table[src[i++]];
         uint32_t sextet_c = src[i] == '=' ? 0 & i++ : decoding_table[src[i++]];
