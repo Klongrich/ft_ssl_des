@@ -16,14 +16,15 @@ static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
 static char *decoding_table = NULL;
 static int mod_table[] = {0, 2, 1};
 
-char        *base64_encode(const unsigned char *src, size_t input_length, size_t output_length) {
+char        *base64_encode(const unsigned char *src, size_t input_length) {
 
-    char    *encoded_data;
-    int     i;
-    int     j;
+    unsigned char       *encoded_data;
+    size_t              output_length;
+    int                 i;
+    int                 j;
 
     output_length = 4 * ((input_length + 2) / 3);
-    encoded_data = (char *)malloc(sizeof(char) * output_length);
+    encoded_data = (unsigned char *)malloc(sizeof(unsigned char) * output_length);
     if (encoded_data == NULL) 
         return NULL;
     i = 0;
@@ -64,9 +65,10 @@ void        base64_cleanup() {
 }
 
 
-unsigned char *base64_decode(const char *src, size_t input_length, size_t output_length) {
+unsigned char *base64_decode(const char *src, size_t input_length) {
 
     unsigned char   *decoded_data;
+    size_t          output_length;
     int             i;
     int             j;
 
@@ -111,8 +113,8 @@ unsigned char *base64_decode(const char *src, size_t input_length, size_t output
 int     main()
 {
     char *name = "ft_base64";
-    char *encoded = base64_encode(name, strlen(name), strlen(name));
-    char *decoded = base64_decode(encoded, strlen(encoded), strlen(encoded));
+    char *encoded = base64_encode(name, strlen(name));
+    char *decoded = base64_decode(encoded, strlen(encoded));
 
     printf("Name: %s\nEncoded: %s\nDecoded: %s\n", name, encoded, decoded);
 
