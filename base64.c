@@ -20,6 +20,10 @@ char        *base64_encode(const unsigned char *src, size_t input_length) {
 
     unsigned char       *encoded_data;
     size_t              output_length;
+    uint32_t            a;
+    uint32_t            b;
+    uint32_t            c;
+    uint32_t            triple;
     int                 i;
     int                 j;
 
@@ -31,11 +35,11 @@ char        *base64_encode(const unsigned char *src, size_t input_length) {
     j = 0;
     while (i < input_length)
     {
-        uint32_t octet_a = i < input_length ? (unsigned char)src[i++] : 0;
-        uint32_t octet_b = i < input_length ? (unsigned char)src[i++] : 0;
-        uint32_t octet_c = i < input_length ? (unsigned char)src[i++] : 0;
+        a = i < input_length ? (unsigned char)src[i++] : 0;
+        b = i < input_length ? (unsigned char)src[i++] : 0;
+        c = i < input_length ? (unsigned char)src[i++] : 0;
 
-        uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
+        triple = (a << 0x10) + (b << 0x08) + c;
 
         encoded_data[j++] = encoding_table[(triple >> 3 * 6) & 0x3F];
         encoded_data[j++] = encoding_table[(triple >> 2 * 6) & 0x3F];
